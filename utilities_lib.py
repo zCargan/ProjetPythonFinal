@@ -75,16 +75,6 @@ def secret_question_ok(question, response):
     return (question != "Choose your question") and (response != "")
 
 
-# def check_strength(password):
-#     if len(password) >= 8:
-#         if bool(re.match('((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,15})', password)):
-#             print("The password is strong")
-#         elif bool(re.match('((\d*)([a-z]*)([A-Z]*)([!@#$%^&*]*).{8,15})', password)):
-#             print("The password is weak")
-#     else:
-#         print("You have entered an invalid password.")
-
-
 def check_permission(username, commande):
     user_role = collection.find_one({"username": username})["role"]
     doc_role = role.find_one({"Role": user_role}, {"_id": 0, "Permissions": 1})
