@@ -15,6 +15,8 @@ def check_password_strength(password):
     :param password: receive a password
     :return: True if the password have minimum 8 letters, minimum a digit caractere and minimum a letter
     """
+
+
     digit = False
     letter = False
     maj = False
@@ -70,7 +72,7 @@ def secret_question_ok(question, response):
     :param response: the reponse of this question
     :return: True if the user choose one of the question and write an answer
     """
-    return ((question != "Choose your question") and (response != ""))
+    return (question != "Choose your question") and (response != "")
 
 
 # def check_strength(password):
@@ -90,6 +92,6 @@ def check_permission(username, commande):
     for i in doc_role["Permissions"]:
         i = upper_function(i)
         if i == new_commande:
-            return f"L'utilisateur peut utiliser la commande : {commande}."
-    return f"L'utilisateur NE peut PAS utiliser la commande : {commande}."
+            return f"L'utilisateur peut utiliser la commande {commande}", True
+    return f"L'utilisateur NE peut PAS utiliser la commande {commande}", False
 

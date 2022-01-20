@@ -1,0 +1,338 @@
+#:import Factory kivy.factory.Factory
+WindowManager:
+    ConnectionWindow:
+    PasswordWindow:
+    CreateAccountWindow:
+
+<ConnectionWindow>:
+    name: "connection"
+    orientation: "vertical"
+
+    GridLayout:
+        cols: 1
+        Label:
+            id: label_top
+            text: "Identification"
+            font_size: 40
+            color: [1, 0.49, 0, 1]
+            pos_hint: {'x': 0.25, 'y': 0.9}
+            size_hint: (.5, 1)
+
+        Label:
+            text: "Enter your username"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.4, 'y': 0.7}
+
+        TextInput:
+            id: input_username
+            text: ""
+            font_size: 20
+            pos_hint: {'x': .38, 'y': 0}
+            size_hint: (.24, 1)
+            halign: "center"
+
+        Label:
+            text: "Enter your password"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.4, 'y': 0.7}
+
+        TextInput:
+            id: input_password
+            text: ""
+            font_size: 20
+            pos_hint: {'x': .38, 'y': 0}
+            size_hint: (.24, 1)
+            halign: "center"
+            password: True
+
+        Button:
+            text: "Password forget?"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.40, 'y': 0}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_press:
+                app.root.current = "password"
+                root.manager.transition.direction = "left"
+
+
+
+        Button:
+            text: "Sign in"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.40, 'y': 0}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_press:
+                from Connection import Connection
+                username = input_username.text
+                password = input_password.text
+                user_connected = Connection(username, password)
+                label_top.text = str(user_connected.check_password)
+                app.root.current == Factory.MyPopup().open() if user_connected.check_password == "Welcome" else "Create"
+
+        Button:
+            text: "Create account?"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.40, 'y': 0}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                app.root.current = "create"
+                root.manager.transition.direction = "right"
+
+
+<PasswordWindow>:
+    name: "password"
+    orientation: "vertical"
+
+    GridLayout:
+        cols: 1
+
+        Label:
+            text: "Password Forget"
+            font_size: 40
+            color: [1, 0.49, 0, 1]
+            background_color: [1, 0.49, 0, 1]
+            pos_hint: {'x': .38, 'y': 0}
+            size_hint: (.1, 1)
+            halign: "center"
+
+        Label:
+            id: username_label
+            text: "Insert your username"
+            pos_hint: {'x': 0.4}
+            size_hint: (.2, 1)
+            halign: "center"
+
+        TextInput:
+            id: username_input
+            font_size: 20
+            pos_hint: {'x': .38, 'y': 0}
+            size_hint: (.24, 1)
+            halign: "center"
+
+        Button:
+            text: "Search user"
+            size_hint: (.24, 1)
+            pos_hint: {'x': 0.38}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                from PasswordForget import PasswordForget
+                user_search = username_input.text
+                question_user = PasswordForget(user_search)
+                label_secret_question.text = str(question_user.search_secret_question)
+
+
+        Label:
+            id: label_secret_question
+            text: 'This is your secret question'
+            size_hint: (0.24, 1)
+            pos_hint: {'x': 0.38, 'y': 0.1}
+            color: [1, 0.49, 0, 1]
+            font_size: 20
+
+        Label:
+            id: answer_user
+            text: "Enter your answer"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: secret_answer
+            text: ""
+            size_hint: (0.24, 1)
+            pos_hint: {'x': 0.38, 'y': 0.1}
+            halign: "center"
+            password: True
+
+        Button:
+            text: "Check my answer"
+            size_hint: (.24, 1)
+            pos_hint: {'x': 0.38}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                from PasswordForget import PasswordForget
+                answer = secret_answer.text
+                user_search = username_input.text
+                question_user = PasswordForget(user_search)
+                label_secret_question.text = "Correct answer, enter your new password" if question_user.check_secret_answer(answer) else "Incorrect"
+
+
+        Label:
+            id: new_password
+            text: "Enter your new password"
+            size_hint: (.2, 1)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: new_password_input
+            text: ""
+            size_hint: (0.24, 1)
+            pos_hint: {'x': 0.38, 'y': 0.1}
+            halign: "center"
+            password: True
+
+        Button:
+            text: "change my password"
+            size_hint: (1, 1)
+            pos_hint: {'x': 0.38}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                from PasswordForget import PasswordForget
+                password = new_password_input.text
+                user_search = username_input.text
+                change_password = PasswordForget(user_search)
+                new_password.text = "Password changed" if change_password.update_password(password) else "Password need to have a character, a letter, a maj and 8 char min"
+                app.root.current = "connection" if change_password.update_password(password) else "password"
+                root.manager.transition.direction = "left"
+        Button:
+            text: "Return to Sign In"
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                app.root.current = "connection"
+                root.manager.transition.direction = "right"
+
+
+
+<CreateAccountWindow>:
+    name: "create"
+    orientation: "vertical"
+
+    GridLayout:
+        cols: 1
+        Label:
+            id: top_label
+            text: "Create your account"
+            color: [1, 0.49, 0, 1]
+            size_hint:(.2, .2)
+            pos_hint: {'x': .4, 'y': 2}
+            font_size: 25
+
+        Label:
+            id: username
+            text: "What's your username"
+            size_hint: (.2, .2)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: username_input
+            text: ""
+            font_size: 20
+            size_hint: (.4, .17)
+            pos_hint: {'x': 0.30, 'y': 2}
+            halign: "center"
+
+        Label:
+            id: email
+            text: "What's your email address"
+            size_hint: (.2, .2)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: email_input
+            text: ""
+            font_size: 20
+            size_hint: (.4, .17)
+            pos_hint: {'x': 0.30}
+            halign: "center"
+
+        Label:
+            id: password
+            text: "What's your password"
+            size_hint: (.2, .2)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: password_input
+            text: ""
+            font_size: 20
+            size_hint: (.4, .17)
+            pos_hint: {'x': 0.30}
+            halign: "center"
+            password: True
+
+        Label:
+            id: confirm_password
+            text: "Confirm your password"
+            size_hint: (.2, .2)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: confirm_password_input
+            text: ""
+            font_size: 20
+            size_hint: (.4, .17)
+            pos_hint: {'x': 0.30}
+            halign: "center"
+            password: True
+
+
+        Spinner:
+            id: secret_question_input
+            text: "Choose your question"
+            values: ("Your first pet's name", "your basics school", "your mother's name")
+            size_hint: (0.4, .17)
+            pos_hint: {'x': 0.3, 'y': 0.8}
+            background_color:[1, 0.49, 0, 1]
+
+
+        Label:
+            id: secret_answer
+            text: "Introduce your answer"
+            size_hint: (.2, .15)
+            pos_hint: {'x': 0.4}
+
+        TextInput:
+            id: secret_answer_input
+            text: ""
+            size_hint: (0.4, .17)
+            pos_hint: {'x': 0.3, 'y': 0.8}
+            font_size: 20
+            halign: "center"
+
+        Button:
+            id: button_account_creation
+            text: "confirm the account creation"
+            size_hint: (.3, .2)
+            pos_hint: {'x': 0.35, 'y': 0.1}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                from Register import Register
+                username_value = username_input.text
+                password_value = password_input.text
+                password_confirm_value = confirm_password_input.text
+                email_value = email_input.text
+                secret_question_value = secret_question_input.text
+                secret_answer_value = secret_answer_input.text.upper()
+                new_user = Register(username_value, password_value, password_confirm_value, email_value, secret_question_value, secret_answer_value)
+                app.root.current = "connection" if new_user.insert_user_data_to_db == "Welcome" else "create"
+                new_user.insert_user_data_to_db
+                root.manager.transition.direction = "left"
+                top_label.text = str(new_user.insert_user_data_to_db)
+                username_input.text = "" if new_user.insert_user_data_to_db == "Welcome" else username_input.text
+
+        Button:
+            text: "Return to Sign In"
+            size_hint: (.3, .2)
+            pos_hint: {'x': 0.35, 'y': 0.1}
+            color: [1, 1, 1, 1]
+            background_color: [1, 0.49, 0, 1]
+            on_release:
+                app.root.current = "connection"
+                root.manager.transition.direction = "left"
+
+<MyPopup@Popup>
+    auto_dismiss: False
+    title: "Connexion réussie !"
+    Button:
+        text: "Close"
+        size_hint: (.3, .2)
+        font_size: 24
+        on_release:
+            root.dismiss()

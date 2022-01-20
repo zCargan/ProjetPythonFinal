@@ -18,11 +18,13 @@ class Connection:
     def check_user_exist(self):
         """
         :return: 1 if the user exist, 0 if the user dont exist
+        :PRE:
+        :POST:
+        :RAISE:
         """
         if collection.find_one({"username": self.username}):
             return True
         return False
-
 
     @property
     def get_user_data_from_db(self):
@@ -37,8 +39,8 @@ class Connection:
             dic_data = self.get_user_data_from_db
             password_register_in_database = dic_data["password"]
             password_crypted = bytes(self.__password, encoding="utf-8")
-            return bcrypt.checkpw(password_crypted, password_register_in_database)
-        return False
-
-
+            if bcrypt.checkpw(password_crypted, password_register_in_database):
+                return "Welcome"
+            return "Username or password incorrect"
+        return "Username or password incorrect"
 

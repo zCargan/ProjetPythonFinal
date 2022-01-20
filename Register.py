@@ -16,9 +16,9 @@ class Register:
     @property
     def check_email_exist(self):
         """
-        check if email address
+        check if email address exist
         :return: True if the email is correct and if it exist in the database, False if the email address does exist in
-        the database and Invalid Email if the email address is not valid
+        the database and False if the email address is not valid
         """
         users_elements = 0
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -27,25 +27,30 @@ class Register:
                 users_elements = + 1
             if users_elements > 0:
                 return True
-            else:
-                return False
+            return False
         else:
-            return "Invalid Email"
+            return False
 
     @property
     def check_user_exist(self):
         """
         :return: True if the user exist in the data
+
+
+        PRE: The username is in the database
+        POST: Return True if the username is in the DB
+        RAISE: ValueError if there is no username given
         """
+
         users_elements = 0
-        if self.username != "":
+        if self.username == "":
+            raise ValueError("Le username ne peut pas être vide")
+        else:
             for i in collection.find({"username": self.username}):
                 users_elements = + 1
             if users_elements > 0:
                 return True
-            else:
-                return False
-        return "Vous devez entrer un Username !", False
+
 
     @property
     def insert_user_data_to_db(self):
@@ -63,9 +68,10 @@ class Register:
                                     "password": hashed_password(self.password), "secret_question": self.secret_question,
                                     "secret_answer": hashed_secret_answer(self.secret_answer), "role": role}
                             collection.insert_one(data)
-                            return f"Welcome {self.username}"
+                            return "Welcome"
                         return "Question or/and answer null"
                     return "Different passwords"
                 return "Password need to have a character, a letter, a maj and 8 char min"
             return "This email address already exists/invalid"
         return "This username already exists/invalid"
+

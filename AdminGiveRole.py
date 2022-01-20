@@ -17,6 +17,7 @@ class AdminGiveRole(ManageRole):
     def manage_role_to_user(self):
         if self.show_status_user(self.admin):
             return "Bien admin"
-        return "Tu n'es pas un admin pute"
+        return "Tu n'es pas un admin"
 
-
+a = AdminGiveRole("admin", 0)
+AdminGiveRole.manage_role_to_user()
